@@ -11,11 +11,11 @@ int addSubtract(int X, int Y, int C)
 
 	}
 	if (C == 0) {//add
-
+		ret = X + Y;
 	}
 
 	else { //subtract
-
+		ret = X - Y;	
 	}
 	return ret;
 }
@@ -24,10 +24,13 @@ int logicOperation(int X, int Y, int C) {
 	if (C < 0 || C > 3) {
 	}
 	else if (C == 0)
-		return;
+		return X & Y;
+	else if (C == 1)
+		return X | Y;
 	else if (C == 2)
-		return;
-	else;
+		return X ^ Y;
+	else
+		return ~(X|Y);
 
 }
 
@@ -38,14 +41,15 @@ int ShiftOperation(int V, int Y, int C) {
 		exit(1);
 	}
 	if (C == 0) {
-		ret;
+		ret =Y;
 
 	}
 	else if (C == 1) {
+		ret = Y << V;
 
 	}
 	else if (C == 2) {
-
+		ret = Y >> V;
 	}
 
 	else {
@@ -56,18 +60,29 @@ int ShiftOperation(int V, int Y, int C) {
 
 int checkZero(int S) {
 	int ret;
+
+	if (S == 0) {
+		ret = 1;
+	}
+	else {
+		ret = 0;
+	}
 	// check if S is zero,
 	//  and return 1 if it is zero
-	//  else return 0
+	//  else return 0
 	return ret;
 }
 
 int checkSetLess(int X, int Y) {
 	int ret;
 
-	// check if X < Y,
-	//  and return 1 if it is true
-	//  else return 0
+
+	if (addSubtract(X, Y, 1) < 0) {
+		ret = 1;
+	}
+	else {
+		ret = 0;
+	}
 
 	return ret;
 }
@@ -76,16 +91,21 @@ int ALU(int X, int Y, int C, int* Z) {
 	int c32, c10;
 	int ret;
 
-	c32 = (C >> 2) & 3;
-	c10 = C & 3;    if (c32 == 0) { // shift        
+	c32 = (C >> 2) & 3;  //--> 4비트 11 2비트랑 and 할려고
+	c10 = C & 3;    
+	if (c32 == 0) { // shift        
 		ret = shiftOperation(X, Y, c10);
 	}
-	else if (c32 == 1) {  // set less         
-		//ret = ????;    
+	else if (c32 == 1) {  // set less      
+		checkSetLess(X, Y);
 	}
 	else if (c32 == 2) {  // addsubtract
+		
 
-		// * Z = ???;        ret = ????;
+		ret = addSubtract(X, Y, c10);
+
+		*Z=checkZero(ret);
+		
 	}
 	else {  // logic
 		ret = logicOperation(X, Y, c10);
@@ -93,19 +113,24 @@ int ALU(int X, int Y, int C, int* Z) {
 }
 
 
-int main()
-{
-	int x, y, c, s, z;
+void test(void) {
+	int x, y, i, s,z;
 
 	//x = input 32bit hexa;
 	//y = input 32bit hexa;
 
 	printf("x: % 8x, y : % 8x\n", x, y);
 
-	for (int i = 0; i < 16; i++) {
+	for (i = 0; i < 16; i++) {
 		s = ALU(x, y, i, &z);
-		printf("s: % 8x, z : % 8x\n");
+		printf("s: %8x, z : %8x\n",s,z);
 	}
+}
+
+int main()
+{
+	test();
+
 
 	return 0;
 }
