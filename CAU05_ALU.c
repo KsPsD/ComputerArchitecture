@@ -36,23 +36,36 @@ int logicOperation(int X, int Y, int C) {
 
 int ShiftOperation(int V, int Y, int C) {
 	int ret;
+	int x;
+	x= V & 31; 
+	//5비트
+  
 	if (C < 0 || C>3) {
 		printf("error in add//subtract operation \n");
 		exit(1);
 	}
 	if (C == 0) {
-		ret =Y;
+		ret = Y;
 
 	}
 	else if (C == 1) {
-		ret = Y << V;
+		ret = Y << x;
 
 	}
 	else if (C == 2) {
-		ret = Y >> V;
+	int val = Y >> x ; 
+	const size_t int_bits = sizeof(int) * 8;
+	unsigned int mask = (1u << x)-1; 
+	mask = mask << (int_bits-x);     
+	mask = ~mask;      
+              
+	val = val & mask;
+
+	ret=val;
 	}
 
 	else {
+		ret = Y >> x; //원래 sra 처리됨
 
 	}
 	return ret;
@@ -67,9 +80,7 @@ int checkZero(int S) {
 	else {
 		ret = 0;
 	}
-	// check if S is zero,
-	//  and return 1 if it is zero
-	//  else return 0
+	
 	return ret;
 }
 
@@ -101,15 +112,14 @@ int ALU(int X, int Y, int C, int* Z) {
 	}
 	else if (c32 == 2) {  // addsubtract
 		
-
 		ret = addSubtract(X, Y, c10);
-
 		*Z=checkZero(ret);
 		
 	}
 	else {  // logic
 		ret = logicOperation(X, Y, c10);
-	}  return ret;
+	}  
+return ret;
 }
 
 
@@ -119,7 +129,7 @@ void test(void) {
 	//x = input 32bit hexa;
 	//y = input 32bit hexa;
 
-	printf("x: % 8x, y : % 8x\n", x, y);
+	printf("x: %8x, y : %8x\n", x, y);
 
 	for (i = 0; i < 16; i++) {
 		s = ALU(x, y, i, &z);
