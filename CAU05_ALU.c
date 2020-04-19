@@ -6,7 +6,7 @@ int addSubtract(int X, int Y, int C)
 {
 	int ret;
 	if (C < 0 || C>1) {
-		printf("error in add//subtract operation \n");
+		printf("error in add/subtract operation \n");
 		exit(1);
 
 	}
@@ -15,13 +15,15 @@ int addSubtract(int X, int Y, int C)
 	}
 
 	else { //subtract
-		ret = X - Y;	
+		ret = X - Y;
 	}
 	return ret;
 }
 
 int logicOperation(int X, int Y, int C) {
 	if (C < 0 || C > 3) {
+		printf("error in logic operation \n");
+		exit(1);
 	}
 	else if (C == 0)
 		return X & Y;
@@ -30,21 +32,21 @@ int logicOperation(int X, int Y, int C) {
 	else if (C == 2)
 		return X ^ Y;
 	else
-		return ~(X|Y);
+		return ~(X | Y);
 
 }
 
 int ShiftOperation(int V, int Y, int C) {
 	int ret;
 	int x;
-	x= V & 31; 
+	x = V & 31;
 	//5비트
-  
+
 	if (C < 0 || C>3) {
 		printf("error in add//subtract operation \n");
 		exit(1);
 	}
-	if (C == 0) {
+	else if (C == 0) {
 		ret = Y;
 
 	}
@@ -53,15 +55,16 @@ int ShiftOperation(int V, int Y, int C) {
 
 	}
 	else if (C == 2) {
-	int val = Y >> x ; 
-	const size_t int_bits = sizeof(int) * 8;
-	unsigned int mask = (1u << x)-1; 
-	mask = mask << (int_bits-x);     
-	mask = ~mask;      
-              
-	val = val & mask;
+		int val = Y >> x; //기존 sra 값 
+		const size_t int_bits = sizeof(int) * 8;  //32비트 생성
+		unsigned int mask = (1u << x) - 1; // 
+		mask = mask << (int_bits - x);
 
-	ret=val;
+		mask = ~mask;
+
+		val = val & mask;
+
+		ret = val;
 	}
 
 	else {
@@ -80,7 +83,7 @@ int checkZero(int S) {
 	else {
 		ret = 0;
 	}
-	
+
 	return ret;
 }
 
@@ -102,38 +105,38 @@ int ALU(int X, int Y, int C, int* Z) {
 	int c32, c10;
 	int ret;
 
-	c32 = (C >> 2) & 3;  //--> 4비트 11 2비트랑 and 할려고
-	c10 = C & 3;    
+	c32 = (C >> 2) & 3;  //-
+	c10 = C & 3;
 	if (c32 == 0) { // shift        
-		ret = shiftOperation(X, Y, c10);
+		ret = ShiftOperation(X, Y, c10);
 	}
 	else if (c32 == 1) {  // set less      
-		checkSetLess(X, Y);
+		ret=checkSetLess(X, Y);
 	}
 	else if (c32 == 2) {  // addsubtract
-		
+		c10 = C & 1;
 		ret = addSubtract(X, Y, c10);
-		*Z=checkZero(ret);
-		
+		*Z = checkZero(ret);
+
 	}
 	else {  // logic
 		ret = logicOperation(X, Y, c10);
-	}  
-return ret;
+	}
+	return ret;
 }
 
 
 void test(void) {
-	int x, y, i, s,z;
+	int x, y, i, s, z;
 
-	//x = input 32bit hexa;
-	//y = input 32bit hexa;
+	x = 12;
+	y = -12;
 
 	printf("x: %8x, y : %8x\n", x, y);
 
 	for (i = 0; i < 16; i++) {
 		s = ALU(x, y, i, &z);
-		printf("s: %8x, z : %8x\n",s,z);
+		printf("s: %8x, z : %8x\n", s, z);
 	}
 }
 
