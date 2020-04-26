@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ComputerArchitecture.c">
+    <ClCompile Include="CAU06_memory.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
